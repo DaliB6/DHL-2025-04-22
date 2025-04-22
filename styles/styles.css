@@ -1,35 +1,41 @@
-
-#title{
+#title {
     color: tomato;
     font-weight: 900;
     font-size: xx-large;
     text-shadow: 7px 7px 10px grey;
     text-decoration: underline darkgray;
 }
-#dot{
+
+#dot {
     color: black;
 }
-#js{
-    color:skyblue;
+
+#js {
+    color: skyblue;
     font-style: italic;
 }
-header img{
+
+header img {
     height: 32px;
 }
-header{
+
+header {
     display: flex;
     justify-content: space-between;
 }
-header a{
+
+header a {
     display: flex;
     flex-direction: column;
 }
-@media print{
-    footer{
+
+@media print {
+    footer {
         display: none;
     }
 }
-footer{
+
+footer {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -37,4 +43,13 @@ footer{
     text-align: center;
     font-size: x-small;
     font-style: italic;
+}
+
+main {
+    height: calc(100vh - 125px);
+}
+
+main>* {
+    height: 100%;
+    overflow-y: auto;
 }
