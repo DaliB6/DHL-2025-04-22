@@ -1,0 +1,26 @@
+
+#title{
+    color: tomato;
+    font-weight: 900;
+    font-size: xx-large;
+    text-shadow: 7px 7px 10px grey;
+    text-decoration: underline darkgray;
+}
+#dot{
+    color: black;
+}
+#js{
+    color:skyblue;
+    font-style: italic;
+}
+header img{
+    height: 32px;
+}
+header{
+    display: flex;
+    justify-content: space-between;
+}
+header a{
+    display: flex;
+    flex-direction: column;
+}
