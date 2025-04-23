@@ -1,7 +1,7 @@
 /**
  * class pour la manipulation du REST
  */
-class Images {
+class Images extends Array {
     //ici je met l'url des ressources sur le srveur REST pour y acceder
     ressourcePath;
     /**
@@ -9,7 +9,9 @@ class Images {
      * @param {string} ressourcePath chemin dans le REST des images
      */
     constructor(ressourcePath) {
+        super();
         this.ressourcePath = ressourcePath;
+
     }
     /**
      * remplacement d'image
