@@ -1,0 +1,29 @@
+
+> dhl-2025-04-22@1.0.0 json
+> json-server -p 5679 db.json
+
+
+  \{^_^}/ hi!
+
+  Loading db.json
+  Done
+
+  Resources
+  http://localhost:5679/images
+  http://localhost:5679/memes
+
+  Home
+  http://localhost:5679
+
+  Type s + enter at any time to create a snapshot of the database
+Some error occurred Error: listen EADDRINUSE: address already in use ::1:5679
+    at Server.setupListenHandle [as _listen2] (node:net:1907:16)
+    at listenInCluster (node:net:1964:12)
+    at GetAddrInfoReqWrap.callback (node:net:2170:7)
+    at GetAddrInfoReqWrap.onlookupall [as oncomplete] (node:dns:132:8) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::1',
+  port: 5679
+}

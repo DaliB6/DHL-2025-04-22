@@ -1,29 +1,35 @@
+const REST_ADR = 'http://localhost:5679'
 /**
  * class pour la manipulation du REST
  */
 class Images extends Array {
     //ici je met l'url des ressources sur le srveur REST pour y acceder
-    ressourcePath;
+    #ressourcePath;
     /**
      * constructeur d'images
      * @param {string} ressourcePath chemin dans le REST des images
      */
-    constructor(ressourcePath) {
+    constructor(ressourcePath = '/images') {
         super();
-        this.ressourcePath = ressourcePath;
+        this.#ressourcePath = ressourcePath;
 
-    }
-    /**
-     * remplacement d'image
-     * @param {object} origineImage image a remplacer
-     * @param {object} newImage image de substitution
-     * @returns {object} image remplacé
+    }/**
+     * chargement rest des datas d'images
      */
-    replaceImage(origineImage, newImage) {
-        return origineImage;
+    loadRessources(callback) {
+        fetch(REST_ADR + this.#ressourcePath)
+            .then(r => r.json())
+            .then((arr) => {
+                this.splice(0);
+                this.push(...arr);
+                console.table(this)
+                callback(this);
+            })
     }
+
 }
 /**
  * instance principales de toutes les images de l'app
  */
 const images = new Images();
+images.loadRessources(()=>{});
