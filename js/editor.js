@@ -1,3 +1,4 @@
+import { redrawSvg } from "./commonSvgDrawer.js";
 import { images } from "./Images.js";
 import { Meme } from "./Meme.js";
 
@@ -33,17 +34,17 @@ function loadFormEvent() {
   function ontextinput(evt) {
     currentMeme[evt.target.name] = evt.target.value;
     console.log(currentMeme);
-    redrawSvg(currentMeme, editorSVGNode);
+    redrawSvg(currentMeme, editorSVGNode,imageSvgREFNode);
   }
   function onnumberinput(evt) {
     currentMeme[evt.target.name] = parseInt(evt.target.value);
     console.log(currentMeme);
-    redrawSvg(currentMeme, editorSVGNode);
+    redrawSvg(currentMeme, editorSVGNode,imageSvgREFNode);
   }
   function oncheckChange(evt) {
     currentMeme[evt.target.name] = evt.target.checked;
     console.log(currentMeme);
-    redrawSvg(currentMeme, editorSVGNode);
+    redrawSvg(currentMeme, editorSVGNode,imageSvgREFNode);
   }
   const form = document.forms["editor-form"];
   form.addEventListener("submit", (evt) => {
@@ -63,33 +64,7 @@ function loadFormEvent() {
   form["underline"].addEventListener("change", oncheckChange);
   form["italic"].addEventListener("change", oncheckChange);
 }
-function redrawSvg(meme, node) {
-  console.log("redraw svg", node, meme);
-  const text = node.querySelector("text");
-  text.setAttribute("fill", meme.color);
-  text.setAttribute("font-size", meme.fontSize);
-  text.setAttribute("font-weight", meme.fontWeight);
-  text.setAttribute("x", meme.x);
-  text.setAttribute("y", meme.y);
-  text.setAttribute("text-decoration", meme.underline ? "underline" : "none");
-  text.setAttribute("font-style", meme.italic ? "italic" : "normal");
-  text.innerHTML = meme.text;
 
-  const img = images.find((image) => image.id === meme.imageId);
-  let imageSvg = node.querySelector("image");
-  if (imageSvg) {
-    imageSvg.remove();
-  }
-  if (img) {
-    imageSvgREFNode.setAttribute("xlink:href", img.url);
-    node.insertBefore(imageSvgREFNode, text);
-    node.setAttribute("viewBox", `0 0 ${img.w} ${img.h}`);
-  } else {
-    node.setAttribute("viewBox", `0 0 500 500`);
-  }
-  // node.setAttribute('viewBox',`0 0 ${img?img.w:500} ${img?img.h:500}`)
-  // console.log(img);
-}
 //document.addEventListener("DOMContentLoaded",
 export function loadEditor() {
   editorSVGNode = document.querySelector("#editor svg");
@@ -99,7 +74,7 @@ export function loadEditor() {
   images.promiseImages.then((loadedImages) => {
     loadComboImage(loadedImages);
     loadFormData(currentMeme);
-    redrawSvg(currentMeme, editorSVGNode);
+    redrawSvg(currentMeme, editorSVGNode,imageSvgREFNode);
   });
 }
 let currentMeme = Meme.getInstanceFromJSON(
