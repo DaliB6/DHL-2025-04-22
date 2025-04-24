@@ -1,3 +1,6 @@
+import { images } from "./Images.js";
+import { Meme } from "./Meme.js";
+
 /**
  * chargement du comboBox de formulaire
  * @param {Images} mesImages
@@ -43,13 +46,12 @@ function loadFormEvent() {
     redrawSvg(currentMeme, editorSVGNode);
   }
   const form = document.forms["editor-form"];
-  form.addEventListener('submit',(evt)=>{
+  form.addEventListener("submit", (evt) => {
     evt.preventDefault();
     currentMeme.save();
     // redrawSvg(currentMeme,editorSVGNode);
-    console.log(evt)
-
-  })
+    console.log(evt);
+  });
 
   form["text"].addEventListener("input", ontextinput);
   form["fontWeight"].addEventListener("input", ontextinput);
@@ -88,19 +90,21 @@ function redrawSvg(meme, node) {
   // node.setAttribute('viewBox',`0 0 ${img?img.w:500} ${img?img.h:500}`)
   // console.log(img);
 }
-document.addEventListener("DOMContentLoaded", () => {
+//document.addEventListener("DOMContentLoaded",
+export function loadEditor() {
   editorSVGNode = document.querySelector("#editor svg");
   imageSvgREFNode = editorSVGNode.querySelector("image");
   loadFormEvent();
-
 
   images.promiseImages.then((loadedImages) => {
     loadComboImage(loadedImages);
     loadFormData(currentMeme);
     redrawSvg(currentMeme, editorSVGNode);
   });
-});
-let currentMeme = Meme.getInstanceFromJSON( `{"id": 1,"titre": "Long wait","text": "Long wait","x": 100,"y": 20,"fontWeight": "900","fontSize": 100,"underline": true,"italic": false,"imageId": 3,"color": "#000000","frameSizeX": 0,"frameSizeY": 0}`);
+}
+let currentMeme = Meme.getInstanceFromJSON(
+  `{"id": 1,"titre": "Long wait","text": "Long wait","x": 100,"y": 20,"fontWeight": "900","fontSize": 100,"underline": true,"italic": false,"imageId": 3,"color": "#000000","frameSizeX": 0,"frameSizeY": 0}`
+);
 // let currentMeme = new Meme();
-let editorSVGNode = undefined;
-let imageSvgREFNode = undefined;
+let editorSVGNode ;
+let imageSvgREFNode;

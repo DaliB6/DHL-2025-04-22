@@ -1,3 +1,4 @@
+import {loadEditor} from './editor.js'
 
 function loadJs(evt) {
     // console.log(arguments);
@@ -7,6 +8,7 @@ function loadJs(evt) {
     jsLoaded.style.backgroundColor = "skyblue";
     jsLoaded.style.color = "tomato";
     jsLoaded.remove();
+    loadEditor();
 }
 
 document.addEventListener('DOMContentLoaded', loadJs);
