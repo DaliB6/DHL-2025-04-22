@@ -55,15 +55,15 @@
     {
       "id": 1,
       "titre": "Long wait",
-      "text": "Long wait",
+      "text": "Long wait 1",
       "x": 100,
-      "y": 20,
+      "y": 200,
       "fontWeight": "900",
-      "fontSize": 100,
+      "fontSize": 300,
       "underline": true,
       "italic": false,
       "imageId": 3,
-      "color": "#000000",
+      "color": "#c4bfbf",
       "frameSizeX": 0,
       "frameSizeY": 0
     },
@@ -231,6 +231,34 @@
       "frameSizeX": 0,
       "frameSizeY": 0,
       "id": 15
+    },
+    {
+      "titre": "Long wait",
+      "text": "Long wait",
+      "x": 100,
+      "y": 20,
+      "fontWeight": "900",
+      "fontSize": 100,
+      "underline": true,
+      "italic": false,
+      "imageId": 3,
+      "color": "#000000",
+      "frameSizeX": 0,
+      "frameSizeY": 0,
+      "id": 16
+    },
+    {
+      "id": 17,
+      "titre": "",
+      "text": "coucou orsys",
+      "x": 70,
+      "y": 200,
+      "fontWeight": "500",
+      "fontSize": 32,
+      "underline": true,
+      "italic": false,
+      "imageId": 2,
+      "color": "#d39797"
     }
   ]
 }
