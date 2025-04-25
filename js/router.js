@@ -46,6 +46,12 @@ const routes = [
     templateUrl: "/vues/editor/Editor.html",
     onContentLoaded: loadEditor,
   },
+  {
+    name: "editor",
+    path: /^\/((list)|(thumbnail))\/?/,
+    templateUrl: "/vues/list/List.html",
+    onContentLoaded: loadList,
+  },
 ];
 class Router {
   viewContextNode;
@@ -107,9 +113,11 @@ class Router {
         this.viewContextNode.innerHTML = htmlTemplate;
         try {
           if (this.currentRoute.onContentLoaded) {
-            this.currentRoute.onContentLoaded(() => {
+            this.currentRoute.callback = () => {
               this.instanciateLinks(this.viewContextNode);
-            }, this.currentRoute.params);
+            };
+            this.currentRoute.contextNode = this.viewContextNode;
+            this.currentRoute.onContentLoaded(this.currentRoute);
           } else {
             this.instanciateLinks(this.viewContextNode);
             // throw new Error() ;

@@ -21,8 +21,8 @@ function drawSvg(meme, node) {
     imageSvg.remove();
   }
 }
-export function loadList(domNodeId) {
-  const contextNode = document.querySelector(domNodeId);
+export function loadList(routeData) {
+  const contextNode =routeData.contextNode.querySelector('#List');
   const aNode = contextNode.querySelector("a");
   Promise.all([memes.promiseMemes, images.promiseImages]).then((r) => {
     r[0].forEach((element) => {
@@ -38,5 +38,6 @@ export function loadList(domNodeId) {
       contextNode.appendChild(cloned);
     });
     aNode.style.display = "none";
+    routeData.callback();
   });
 }

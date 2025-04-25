@@ -93,7 +93,7 @@ function redrawSvg(meme, node) {
   // console.log(img);
 }
 //document.addEventListener("DOMContentLoaded",
-export function loadEditor(callback,params) {
+export function loadEditor(routeData) {
   editorSVGNode = document.querySelector("#editor svg");
   imageSvgREFNode = editorSVGNode.querySelector("image");
   loadFormEvent();
@@ -103,22 +103,22 @@ export function loadEditor(callback,params) {
     loadFormData(currentMeme);
     redrawSvg(currentMeme, editorSVGNode);
   });
-  if (params && params.id) {
-    if (typeof params.id === "string") params.id = Number(params.id);
+  if (routeData && routeData.params && routeData.params.id) {
+    if (typeof routeData.params.id === "string")
+      routeData.params.id = Number(routeData.params.id);
     memes.promiseMemes.then((ms) => {
-      currentMeme = ms.find((m) => m.id === params.id);
+      currentMeme = ms.find((m) => m.id === routeData.params.id);
       if (undefined === currentMeme) {
         router.navigate("/");
         return;
       }
       loadFormData(currentMeme);
       redrawSvg(currentMeme, editorSVGNode);
-    
     });
   } else {
     currentMeme = new Meme();
   }
-  callback();
+  routeData.callback();
 }
 // let currentMeme = Meme.getInstanceFromJSON(`{"id": 1,"titre": "Long wait","text": "Long wait","x": 100,"y": 20,"fontWeight": "900","fontSize": 100,"underline": true,"italic": false,"imageId": 3,"color": "#000000","frameSizeX": 0,"frameSizeY": 0}`);
 let currentMeme = new Meme();
