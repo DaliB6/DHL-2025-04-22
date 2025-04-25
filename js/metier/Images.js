@@ -37,7 +37,6 @@ class Images extends Array {
                 .then((arr) => {
                     this.splice(0);
                     this.push(...arr);
-                    //console.table(this);
                     return this;
                 })
         }
