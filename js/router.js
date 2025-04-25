@@ -1,29 +1,3 @@
-import { loadEditor } from "../vues/editor/editor.js";
-
-import { loadList } from "../vues/list/list.js";
-function loadHomeView() {
-  fetch("/vues/home/home.html")
-    .then((r) => r.text())
-    .then((h) => {
-      document.querySelector("main").innerHTML = h;
-    });
-}
-function loadEditorView() {
-  fetch("/vues/editor/Editor.html")
-    .then((r) => r.text())
-    .then((h) => {
-      document.querySelector("main").innerHTML = h;
-      loadEditor();
-    });
-}
-function loadListView() {
-  fetch("/vues/list/List.html")
-    .then((r) => r.text())
-    .then((h) => {
-      document.querySelector("main").innerHTML = h;
-      loadList("#List");
-    });
-}
 const errorRoutes = {
   404: {
     name: "404 NOT FOUND",
@@ -34,31 +8,13 @@ const errorRoutes = {
     templateUrl: "/vues/errors/500.html",
   },
 };
-const routes = [
-  {
-    name: "home",
-    path: "/",
-    templateUrl: "/vues/home/home.html",
-  },
-  {
-    name: "editor",
-    path: /^\/editor(\/(?<id>\d+))?\/?$/,
-    templateUrl: "/vues/editor/Editor.html",
-    onContentLoaded: loadEditor,
-  },
-  {
-    name: "editor",
-    path: /^\/((list)|(thumbnail))\/?/,
-    templateUrl: "/vues/list/List.html",
-    onContentLoaded: loadList,
-  },
-];
+
 class Router {
   viewContextNode;
   currentPath;
   currentRoute;
   #getCurrentRouteFromPath(path) {
-    this.currentRoute = routes.find((route) => {
+    this.currentRoute = this.routes.find((route) => {
       if (route.path instanceof RegExp) {
         const regexResult = route.path.exec(path);
         if (regexResult === null) return false;
@@ -84,7 +40,8 @@ class Router {
     history.pushState(undefined, undefined, path);
     console.log(this.currentRoute);
   }
-  initRoute(path, viewContextNode) {
+  initRoute(routes,path, viewContextNode) {
+    this.routes=routes
     this.viewContextNode = viewContextNode;
     this.#instanciateRoute(path);
     console.log(this.currentRoute);
@@ -130,4 +87,4 @@ class Router {
   }
 }
 export const router = new Router();
-window.forceNav = (path) => router.navigate(path);
+window.navigate = (path) => router.navigate(path);
