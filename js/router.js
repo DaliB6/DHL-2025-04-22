@@ -105,10 +105,18 @@ class Router {
       .then((htmlResponse) => htmlResponse.text())
       .then((htmlTemplate) => {
         this.viewContextNode.innerHTML = htmlTemplate;
-        if (this.currentRoute.onContentLoaded) {
-          this.currentRoute.onContentLoaded(() => {
+        try {
+          if (this.currentRoute.onContentLoaded) {
+            this.currentRoute.onContentLoaded(() => {
+              this.instanciateLinks(this.viewContextNode);
+            }, this.currentRoute.params);
+          } else {
             this.instanciateLinks(this.viewContextNode);
-          }, this.currentRoute.params);
+            // throw new Error() ;
+          }
+        } catch {
+          this.currentRoute = errorRoutes[500];
+          this.#instanciateRoute();
         }
       });
   }
