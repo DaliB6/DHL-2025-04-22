@@ -5,7 +5,7 @@
   "scripts": {
     "html": "lite-server",
     "json":"json-server -p 5679 db.json",
-    "start" : "npm run json>json.txt & npm run html>html.txt"
+    "start" : "npm run json | npm run html"
   },
   "keywords": [],
   "author": "",

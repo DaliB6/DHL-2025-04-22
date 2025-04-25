@@ -66,7 +66,7 @@ function loadFormEvent() {
 }
 
 //document.addEventListener("DOMContentLoaded",
-export function loadEditor() {
+export default function loadEditor() {
   editorSVGNode = document.querySelector("#editor svg");
   imageSvgREFNode = editorSVGNode.querySelector("image");
   loadFormEvent();

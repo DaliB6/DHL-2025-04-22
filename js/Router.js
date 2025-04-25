@@ -1,90 +1,142 @@
-//import { errors, routes } from "./routes.js";
-
-const errors = {
-  404: {
-    name: "404",
-    titre: "404 not found",
-    template: `<h1>404 NOT FOUND</h1>`,
-  },
-  500: {
-    name: "500",
-    titre: "500 internal server error",
-    template: `<h1>500 INTERNAL SERVER ERROR</h1>`,
-  },
-};
-export class Router {
-  #routerNodeId;
-  set contextNodeId(value){
-    this.#routerNodeId = value;
-  }
-  #currentRoute;
-  #currentPath = "/";
-  #routes;
-  set routes(value){
-    this.#routes=value;
-  }
-  get path() {
-    return this.#currentPath;
-  }
-  constructor(routes) {
-    this.#routes = routes;
-  }
-  initRouter(contextNodeId,documentContext){
-    this.#routerNodeId=contextNodeId;
-    this.#currentPath=location.pathname;
-    this.navigate(this.#currentPath);
-    this.#fixLinksByEvents(documentContext);
-  }
-  navigate(path) {
-    this.#currentPath = path;
-    this.#currentRoute = this.#routes.find((route) => {
-      if (route.path instanceof RegExp) {
-        let m = route.path.exec(path.replace(location.origin,''));
-        if (undefined !== m) {
-          this.#currentRoute.params = m.groups;
-          history.pushState(undefined, undefined, path);
+/**
+ * class Pour routeur flexible et modulaire
+ */
+class Router {
+    /**
+     * ensembles des routes du routeur
+     */
+    #routes;
+    /**
+     * ensemble des routes d'erreur
+     */
+    #errorRoutes;
+    /**
+     * element id of wrapper node
+     */
+    #wrapperId;
+    /**
+     * element instance to wrappe in
+     */
+    #wrapper;
+    /**
+     * chemin courrant
+     */
+    #currentPath = "/";
+    /**
+     * createur d'instance de routeur generique
+     * @param {[]} routes
+     * @param {{}} errorRoutes
+     */
+    constructor(routes, errorRoutes, wrapperId = "wrapper") {
+      this.#routes = routes;
+      this.#errorRoutes = errorRoutes;
+      this.#wrapperId = wrapperId;
+    }
+    initRoutes(routes, errorRoutes, wrapperId = "wrapper") {
+      this.#routes = routes;
+      this.#errorRoutes = errorRoutes;
+      this.#wrapperId = wrapperId;
+      console.log(this.#wrapperId);
+      window.addEventListener('popstate',()=>{
+        routeAnalyze();
+      })
+    }
+    routeAnalyze() {
+      const path = location.pathname;
+      console.log(path);
+      this.wrapperId = this.#wrapperId;
+      let currentRoute = this.#routes.find((route) => {
+        if (typeof route.path === "string" && route.path === path) {
           return true;
-        } else {
-          return false;
-        }
-      } else if (route.path === path.replace(location.origin,'')) {
-        history.pushState(undefined, undefined, path);
-        return true;
-      } else {
-        return false;
-      }
-    });
-    if (undefined === this.#currentRoute) {
-      this.#currentRoute = errors[404];
-    }
-    if (this.#currentRoute.template) {
-      this.#loadInnerFromRouteTemplate();
-    } else {
-      fetch(location.origin + this.#currentRoute.templateUrl)
-        .then((r) => r.text())
-        .then((h) => {
-          this.#currentRoute.template = h;
-          this.#loadInnerFromRouteTemplate();
-        });
-    }
-  }
-  #loadInnerFromRouteTemplate() {
-    document.querySelector('#'+this.#routerNodeId).innerHTML = this.#currentRoute.template;
-    if (
-      undefined !== this.#currentRoute.loaderJS &&
-      typeof this.#currentRoute.loaderJS === "function"
-    ) {
-      this.#currentRoute.loaderJS();
-    }
-    this.#fixLinksByEvents(document.querySelector('#'+this.#routerNodeId));
-  }
-  #fixLinksByEvents(contextNode) {
-    contextNode.querySelectorAll("a").forEach((element) => {
-      element.addEventListener("click", (evt) => {
-        evt.preventDefault();
-        this.navigate(evt.target.href);
+        } else if (route.path instanceof RegExp) {
+          const m = route.path.exec(path);
+          if (m === null) return false;
+          else {
+            route.params = m.groups;
+            return true;
+          }
+        } else false;
       });
-    });
+  
+      if (undefined === currentRoute) {
+        currentRoute = this.#errorRoutes[404];
+      }
+  
+      if (currentRoute.template) {
+        this.#loadingTemplateInView(currentRoute);
+      } else if (currentRoute.templateUrl) {
+        const promiseFetch = fetch(currentRoute.templateUrl).then((r) =>
+          r.text()
+        );
+        const timeOut = new Promise((resolved) => {
+          setTimeout(() => {
+            resolved(this.#errorRoutes[408]);
+          }, 1000);
+        });
+        Promise.race([promiseFetch, timeOut]).then((resp) => {
+          if (typeof resp === "object") {
+            currentRoute = resp;
+          } else {
+            currentRoute.template = resp;
+            this.#loadingTemplateInView(currentRoute);
+          }
+        });
+      } else {
+        this.#loadingTemplateInView(this.#errorRoutes[500]);
+      }
+    }
+    /**
+     * chargement de la route deja chargé(http) dans l'espace dedié a la vue(wrapper)
+     * @param {Route} route
+     */
+    #loadingTemplateInView(route) {
+      this.#wrapper.innerHTML = route.template;
+      if (
+        route.onTemplateLoaded &&
+        typeof route.onTemplateLoaded === "function"
+      ) {
+        route.onTemplateLoaded(this.#wrapper,route.params);
+      }
+    }
+    /**
+     * navigation vers un path
+     * @param {string} route path a mettre en oeuvre
+     * @returns {undefined} ne retourne rien
+     */
+    navigate(route) {
+      if (undefined === route || route.length === 0) route = "/";
+      if (route[0] !== "/") route = "/" + route;
+      history.pushState(undefined, undefined, route);
+      this.#currentPath = route;
+      this.routeAnalyze();
+    }
+    error(code){
+      this.#loadingTemplateInView(this.#errorRoutes[code]);
+    }
+    mapRouterLinks(contextId) {
+      document.querySelectorAll("#" + contextId + " a").forEach((element) => {
+        element.addEventListener("click", (evt) => {
+          evt.preventDefault();
+          this.navigate(evt.currentTarget.href.replace(location.origin, ""));
+        });
+      });
+    }
+    get currentPath() {
+      return this.#currentPath;
+    }
+    get fullCurrentPath() {
+      return location.origin + this.#currentPath;
+    }
+    set wrapperId(value) {
+      this.#wrapperId = value;
+      this.#wrapper = document.getElementById(value);
+    }
   }
-}
-export const router = new Router();
+  
+  /**
+   * instance globale du routeur
+   */
+  export const router = new Router();
+  export default router;
+  export const navigate=router.navigate;
+  export const routeAnalyze=()=>{return router.routeAnalyze()};
