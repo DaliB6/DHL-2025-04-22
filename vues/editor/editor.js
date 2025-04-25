@@ -1,5 +1,5 @@
-import { images } from "./Images.js";
-import { Meme } from "./Meme.js";
+import { images } from "../../js/metier/Images.js";
+import { Meme } from "../../js/metier/Meme.js";
 
 /**
  * chargement du comboBox de formulaire

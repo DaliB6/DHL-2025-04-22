@@ -1,4 +1,5 @@
-import { loadEditor } from "./editor.js";
+import { loadEditor } from "../vues/editor/editor.js";
+import { loadList } from "../vues/list/list.js";
 
 function loadJs(evt) {
   console.log(evt);
@@ -24,20 +25,29 @@ function loadJs(evt) {
 
   // loadHome();
   //loadEditorView();
+  loadListView();
 }
 function loadHomeView() {
-  fetch("/vues/home.html")
+  fetch("/vues/home/home.html")
     .then((r) => r.text())
     .then((h) => {
       document.querySelector("main").innerHTML = h;
     });
 }
 function loadEditorView() {
-  fetch("/vues/Editor.html")
+  fetch("/vues/editor/Editor.html")
     .then((r) => r.text())
     .then((h) => {
       document.querySelector("main").innerHTML = h;
       loadEditor();
     });
 }
+function loadListView() {
+    fetch("/vues/list/List.html")
+      .then((r) => r.text())
+      .then((h) => {
+        document.querySelector("main").innerHTML = h;
+        loadList('#List');
+      });
+  }
 document.addEventListener("DOMContentLoaded", loadJs);
